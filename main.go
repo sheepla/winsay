@@ -2,11 +2,20 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/go-ole/go-ole"
 	"github.com/go-ole/go-ole/oleutil"
+)
+
+type exitCode int
+const (
+    exitCodeOK exitCode = iota
+    exitCodeErrArgs
+    exitCodeErrSpeak
 )
 
 type options struct {
@@ -14,10 +23,21 @@ type options struct {
 }
 
 func main() {
+    os.Exit(int(Main()))
+}
+
+func Main() exitCode {
 	var opts options
 	flag.IntVar(&opts.Rate, "r", 0, "Speech rate (default: 0, slowest :-10, fastest: 10)")
 	flag.Parse()
+
+    if len(flag.Args()) == 0 {
+        fmt.Fprintln(os.Stderr, "Must require arguments")
+        return exitCodeErrArgs
+    }
+
 	say(strings.Join(flag.Args(), " "), opts.Rate)
+    return exitCodeOK
 }
 
 func say(text string, rate int) {
