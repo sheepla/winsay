@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -12,10 +11,11 @@ import (
 )
 
 type exitCode int
+
 const (
-    exitCodeOK exitCode = iota
-    exitCodeErrArgs
-    exitCodeErrSpeak
+	exitCodeOK exitCode = iota
+	exitCodeErrArgs
+	exitCodeErrSpeak
 )
 
 type options struct {
@@ -23,7 +23,7 @@ type options struct {
 }
 
 func main() {
-    os.Exit(int(Main()))
+	os.Exit(int(Main()))
 }
 
 func Main() exitCode {
@@ -31,30 +31,39 @@ func Main() exitCode {
 	flag.IntVar(&opts.Rate, "r", 0, "Speech rate (default: 0, slowest :-10, fastest: 10)")
 	flag.Parse()
 
-    if len(flag.Args()) == 0 {
-        fmt.Fprintln(os.Stderr, "Must require arguments")
-        return exitCodeErrArgs
-    }
+	if len(flag.Args()) == 0 {
+		fmt.Fprintln(os.Stderr, "Must require arguments")
+		return exitCodeErrArgs
+	}
 
 	say(strings.Join(flag.Args(), " "), opts.Rate)
-    return exitCodeOK
+	return exitCodeOK
 }
 
-func say(text string, rate int) {
+func say(text string, rate int) error {
 	ole.CoInitialize(0)
 	defer ole.CoUninitialize()
 
 	unknown, err := oleutil.CreateObject("SAPI.SpVoice")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	sapi, err := unknown.QueryInterface(ole.IID_IDispatch)
-	if err != nil {
-		log.Fatal(err)
-	}
 	defer sapi.Release()
+	if err != nil {
+		return err
+	}
 
-	oleutil.PutProperty(sapi, "Rate", rate)
-	oleutil.CallMethod(sapi, "Speak", text)
+	_, err = oleutil.PutProperty(sapi, "Rate", rate)
+	if err != nil {
+		return err
+	}
+
+	_, err = oleutil.CallMethod(sapi, "Speak", text)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
