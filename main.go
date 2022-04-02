@@ -10,6 +10,11 @@ import (
 	"github.com/jessevdk/go-flags"
 )
 
+const (
+	appName  = "winsay"
+	appUsage = "[OPTIONS] TEXT..."
+)
+
 type exitCode int
 
 const (
@@ -29,6 +34,8 @@ func main() {
 func Main(cliArgs []string) exitCode {
 	var opts options
 	parser := flags.NewParser(&opts, flags.Default)
+	parser.Name = appName
+	parser.Usage = appUsage
 	args, err := parser.ParseArgs(cliArgs)
 	if err != nil {
 		if flags.WroteHelp(err) {
