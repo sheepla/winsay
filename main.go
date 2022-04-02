@@ -1,13 +1,13 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/go-ole/go-ole"
 	"github.com/go-ole/go-ole/oleutil"
+	"github.com/jessevdk/go-flags"
 )
 
 type exitCode int
@@ -19,24 +19,34 @@ const (
 )
 
 type options struct {
-	Rate int
+	Rate int `short:"r" long:"rate" description:"Speech rate" default:"0"`
 }
 
 func main() {
-	os.Exit(int(Main()))
+	os.Exit(int(Main(os.Args[1:])))
 }
 
-func Main() exitCode {
+func Main(cliArgs []string) exitCode {
 	var opts options
-	flag.IntVar(&opts.Rate, "r", 0, "Speech rate (default: 0, slowest :-10, fastest: 10)")
-	flag.Parse()
-
-	if len(flag.Args()) == 0 {
+	parser := flags.NewParser(&opts, flags.Default)
+	args, err := parser.ParseArgs(cliArgs)
+	if err != nil {
+		if flags.WroteHelp(err) {
+			return exitCodeOK
+		} else {
+			fmt.Fprintf(os.Stderr, "Parse Error: %s\n", err)
+			return exitCodeErrArgs
+		}
+	}
+	if len(args) == 0 {
 		fmt.Fprintln(os.Stderr, "Must require arguments")
 		return exitCodeErrArgs
 	}
 
-	say(strings.Join(flag.Args(), " "), opts.Rate)
+	if err = say(strings.Join(args, " "), opts.Rate); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return exitCodeErrArgs
+	}
 	return exitCodeOK
 }
 
