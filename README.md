@@ -7,7 +7,14 @@
 Just specify the text as arugument(s). The text will read aloud.
 
 ```
-winsay TEXT...
+Usage:
+  winsay [OPTIONS] TEXT...
+
+Application Options:
+  -r, --rate= Speech rate (default: 0)
+
+Help Options:
+  -h, --help  Show this help message
 ```
 
 ## Installation
