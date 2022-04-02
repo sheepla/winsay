@@ -3,13 +3,14 @@ package main
 import (
 	"log"
 	"os"
+	"strings"
 
 	"github.com/go-ole/go-ole"
 	"github.com/go-ole/go-ole/oleutil"
 )
 
 func main() {
-	say(os.Args[1])
+    say(strings.Join(os.Args[1:], " "))
 }
 
 func say(text string) {
