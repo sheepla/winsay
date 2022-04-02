@@ -1,6 +1,6 @@
 # 📣 winsay
 
-`say` command for Windows powered by [Microsoft Speech API](https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ee125663(v=vs.85))
+**say** command for Windows powered by [Microsoft Speech API](https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ee125663(v=vs.85))
 
 ## Usage
 
@@ -19,7 +19,15 @@ Help Options:
 
 ## Installation
 
-Clone this repository then run `go install`
+You can download executable binary from the release page.
+
+> [Latest Release](https://github.com/sheepla/winsay/releases/latest)
+
+To build from source, clone this repository then run `go install`.
+
+## Contributing
+
+Welcome! 💕
 
 ## LICENSE
 
