@@ -1,19 +1,26 @@
 package main
 
 import (
+	"flag"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/go-ole/go-ole"
 	"github.com/go-ole/go-ole/oleutil"
 )
 
-func main() {
-    say(strings.Join(os.Args[1:], " "))
+type options struct {
+	Rate int
 }
 
-func say(text string) {
+func main() {
+	var opts options
+	flag.IntVar(&opts.Rate, "r", 0, "Speech rate (default: 0, slowest :-10, fastest: 10)")
+	flag.Parse()
+	say(strings.Join(flag.Args(), " "), opts.Rate)
+}
+
+func say(text string, rate int) {
 	ole.CoInitialize(0)
 	defer ole.CoUninitialize()
 
@@ -27,5 +34,7 @@ func say(text string) {
 		log.Fatal(err)
 	}
 	defer sapi.Release()
+
+	oleutil.PutProperty(sapi, "Rate", rate)
 	oleutil.CallMethod(sapi, "Speak", text)
 }
