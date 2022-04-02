@@ -20,7 +20,7 @@ type exitCode int
 const (
 	exitCodeOK exitCode = iota
 	exitCodeErrArgs
-	exitCodeErrSpeak
+	exitCodeErrSay
 )
 
 type options struct {
@@ -52,7 +52,7 @@ func Main(cliArgs []string) exitCode {
 
 	if err = say(strings.Join(args, " "), opts.Rate); err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		return exitCodeErrArgs
+		return exitCodeErrSay
 	}
 	return exitCodeOK
 }
