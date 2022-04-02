@@ -7,14 +7,12 @@ before:
     # you may remove this if you don't need go generate
     - go generate ./...
 builds:
-  goos:
-    - windows
-  goarch:
-    - amd64
-    - arm64
-    - i386
-  tags:
-    forceposix
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    tags:
+      - forceposix
 archives:
   - replacements:
       windows: Windows
