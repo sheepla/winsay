@@ -14,6 +14,7 @@ builds:
     tags:
       - forceposix
 archives:
+  - format: zip
   - replacements:
       windows: Windows
       386: i386
